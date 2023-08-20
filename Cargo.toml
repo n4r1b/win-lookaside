@@ -1,0 +1,21 @@
+[package]
+name = "win-lookaside"
+version = "0.1.0"
+edition = "2021"
+description = "Simple Windows Lookaside Kernel Allocator"
+authors = ["n4r1B"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies.windows-sys]
+git = "https://github.com/microsoft/windows-rs.git"
+features = [
+    "Wdk",
+    "Wdk_System",
+    "Wdk_Foundation",
+    "Wdk_System_SystemServices",
+    "Win32_Foundation"
+]
+
+[dependencies]
+spin = "0.9.8"
