@@ -10,15 +10,18 @@ readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies.windows-sys]
-git = "https://github.com/microsoft/windows-rs.git"
-features = [
-    "Wdk",
-    "Wdk_System",
-    "Wdk_Foundation",
-    "Wdk_System_SystemServices",
-    "Win32_Foundation"
-]
+# Enable once new release of windows-sys is ready
+# See https://github.com/microsoft/windows-rs/issues/2455#issuecomment-1512948226
+# [dependencies.windows-sys]
+# version = "^0.48.0"
+# git = "https://github.com/microsoft/windows-rs.git"
+# features = [
+#     "Wdk",
+#     "Wdk_System",
+#     "Wdk_Foundation",
+#     "Wdk_System_SystemServices",
+#     "Win32_Foundation"
+# ]
 
 [dependencies]
 spin = "0.9.8"

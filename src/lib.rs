@@ -135,14 +135,14 @@ use core::{
     sync::atomic::{AtomicBool, Ordering},
 };
 
+/*
+TODO: Review WDK metadata https://github.com/microsoft/wdkmetadata#overview
+TODO: Use bindings from windows-rs when available
 use windows_sys::{
     Wdk::Foundation::POOL_TYPE,
     Win32::Foundation::{NTSTATUS, STATUS_SUCCESS},
 };
 
-/*
-TODO: Review WDK metadata https://github.com/microsoft/wdkmetadata#overview
-TODO: Use bindings from windows-rs when available
 use windows_sys::Wdk::System::SystemServices::{
     ExAllocateFromLookasideListEx,
     ExDeleteLookasideListEx,
@@ -169,7 +169,7 @@ pub type LookasideResult<T> = Result<T, LookasideError>;
 /// More info: <https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nc-wdm-allocate_function_ex>
 pub type AllocateFunctionEx = Option<
     unsafe extern "system" fn(
-        pooltype: POOL_TYPE,
+        pooltype: i32, // Change to POOL_TYPE
         numberofbytes: usize,
         tag: u32,
         lookaside: *mut LookasideList,
@@ -182,20 +182,22 @@ pub type AllocateFunctionEx = Option<
 pub type FreeFunctionEx =
     Option<unsafe extern "system" fn(buffer: *const c_void, *mut LookasideList)>;
 
-/// Newtype over windows-sys [NTSTATUS (i32)](https://docs.rs/windows-sys/0.48.0/windows_sys/Win32/Foundation/type.NTSTATUS.html)
+// Newtype over windows-sys [NTSTATUS (i32)](https://docs.rs/windows-sys/0.48.0/windows_sys/Win32/Foundation/type.NTSTATUS.html)
+// Change to windows-sys NTSTATUS when windows-sys bindings are ready
+/// Newtype over i32.
 #[repr(transparent)]
 #[derive(Copy, Clone)]
-pub struct NtStatus(NTSTATUS);
+pub struct NtStatus(i32);
 
 impl NtStatus {
     /// True if NTSTATUS == STATUS_SUCCESS
     pub fn is_ok(&self) -> bool {
-        self.0 == STATUS_SUCCESS
+        self.0 == 0
     }
 
     /// True if NTSTATUS != STATUS_SUCCESS
     pub fn is_err(&self) -> bool {
-        self.0 != STATUS_SUCCESS
+        self.0 != 0
     }
 }
 
@@ -231,7 +233,7 @@ extern "system" {
         lookaside: *mut LookasideList,
         allocate: AllocateFunctionEx,
         free: FreeFunctionEx,
-        pool_type: POOL_TYPE,
+        pool_type: i32, // Change to POOL_TYPE
         flags: u32,
         size: usize,
         tag: u32,
@@ -284,7 +286,7 @@ impl LookasideAlloc {
     pub fn init(
         &mut self,
         size: usize,
-        pool_type: POOL_TYPE,
+        pool_type: i32, // Change POOL_TYPE
         tag: Option<u32>,
         flags: Option<u32>,
         alloc_fn: AllocateFunctionEx,
